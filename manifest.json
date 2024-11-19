@@ -4,17 +4,11 @@
   "version": "1.0",
   "description": "Capture entire webpages in a single click. SnapPage lets you take seamless full-page screenshots for easy sharing and saving",
   "author": "",
-  "permissions": ["activeTab", "tabs", "<all_urls>"],
+  "permissions": ["activeTab", "tabs", "scripting"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
   },
-  "content_scripts": [
-    {
-      "matches": ["*://*/*"],
-      "js": ["content.js"]
-    }
-  ],
   "action": {
     "default_popup": "index.html",
     "default_icon": {
