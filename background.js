@@ -1,5 +1,4 @@
-
-function CaptureVisibility (imageList){
+function CaptureVisibility(imageList) {
   chrome.tabs.captureVisibleTab(null, { format: "png" }, (imageUrl) => {
     if (chrome.runtime.lastError) {
       console.error(
@@ -18,26 +17,40 @@ function CaptureVisibility (imageList){
     } else {
       console.log("Screenshot URL:", imageUrl);
       // sendResponse({ imageUrl: imageUrl });
-      imageList.push(imageUrl)
+      imageList.push(imageUrl);
+      console.log(imageUrl);
+      
     }
   });
+}
 
-} 
-
-function MultipleScreenShot(scrollCount,Display_Height) {
-  var currentTop = 0
+function MultipleScreenShot(scrollCount, Display_Height) {
+  var currentTop = 0;
   var imageList = [];
   var currentBottom = Display_Height;
   for (let index = 0; index < scrollCount; index++) {
-    window.scroll(currentTop,currentBottom)
-    CaptureVisibility(imageList)
+  console.log("top",currentTop);
+  console.log("bottom",currentBottom);
+    chrome.runtime.sendMessage(
+      {
+        action: "scroll",
+        data: {
+          top: currentTop,
+          bottom: currentBottom,
+        },
+      },
+      (res) => {
+        CaptureVisibility(imageList);
+        
+      }
+    );
     currentTop = currentBottom;
     currentBottom += Display_Height;
   }
-  console.log(imageList);
+  
+  
   
 }
-
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.action === "takeScreenshot") {
@@ -45,7 +58,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     console.log("Full Page Height:", message.Display_Height);
     const scrollCount = Math.ceil(message.Full_Height / message.Display_Height);
     console.log("times to scroll :", scrollCount);
-    MultipleScreenShot(scrollCount,message.Display_Height)
+    MultipleScreenShot(scrollCount, message.Display_Height / scrollCount);
     return true;
   }
 });

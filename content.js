@@ -7,3 +7,11 @@ chrome.runtime.sendMessage({
   Full_Height: pageHeight,
   Display_Height: displayHeight,
 });
+
+chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
+  if(message.action == 'scroll' ){
+    const {top , bottom } = message.data;
+    window.scroll(top,bottom);
+    sendResponse({success: true})
+  }
+})
