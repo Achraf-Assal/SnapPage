@@ -8,10 +8,13 @@ chrome.runtime.sendMessage({
   Display_Height: displayHeight,
 });
 
-chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
-  if(message.action == 'scroll' ){
-    const {top , bottom } = message.data;
-    window.scroll(top,bottom);
-    sendResponse({success: true})
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "scroll") {
+    const { top, bottom } = message.data;
+    window.scrollTo({
+      top: top,
+      behavior: "instant", // Ensures instant scroll without animation
+    });
+    sendResponse({ success: true });
   }
-})
+});
